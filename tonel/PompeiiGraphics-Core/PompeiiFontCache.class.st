@@ -105,6 +105,10 @@ PompeiiFontCache >> ensureSpaceForWidth: nextWidth height: nextHeight [
 		self increaseHeighTo: (destinationY + maxCurrentHeight + 1) asLargerPowerOfTwo
 	].
 
+	bits ifNil: [ 
+		"Fixed size case"
+		bits := ByteArray new: height * FontTextureWidth
+	].
 	form := nil.
 ]
 
@@ -149,6 +153,11 @@ PompeiiFontCache >> getPreciseDescent [
 	^ font getPreciseDescent
 ]
 
+{ #category : #private }
+PompeiiFontCache >> hasFixedSize [
+	^ false
+]
+
 { #category : #accessing }
 PompeiiFontCache >> height [
 	^ height
@@ -157,15 +166,21 @@ PompeiiFontCache >> height [
 { #category : #private }
 PompeiiFontCache >> increaseHeighTo: newHeight [
 	| newBits |
+	self error: 'Cannot increase font size'.
 	newBits := ByteArray new: newHeight * FontTextureWidth.
 	bits ifNotNil: [ LibC memCopy: bits to: newBits size: bits size ].
 	bits := newBits.
 	height := newHeight.
 ]
 
+{ #category : #private }
+PompeiiFontCache >> initialHeight [
+	^ self hasFixedSize ifTrue: [ 128"FontTextureWidth" ] ifFalse: [ 0 ]
+]
+
 { #category : #initialization }
 PompeiiFontCache >> initialize [
-	height := 0.
+	height := self initialHeight.
 	destinationX := 1.
 	destinationY := 1.
 	codePointMap := Dictionary new.
