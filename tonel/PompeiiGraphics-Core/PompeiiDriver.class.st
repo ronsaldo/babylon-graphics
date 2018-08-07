@@ -72,6 +72,19 @@ PompeiiDriver >> createFontCache: aLogicalFont [
 	^ PompeiiFontCache font: aLogicalFont
 ]
 
+{ #category : #'as yet unclassified' }
+PompeiiDriver >> createMaterialForTexture: aTexture [
+	^ PompeiiTextureMaterial new texture: aTexture
+]
+
+{ #category : #'as yet unclassified' }
+PompeiiDriver >> createMaterialForTextureArray: aTextureArray element: aTextureElementIndex [
+	^ PompeiiTextureArrayElementMaterial new
+		textureArray: aTextureArray;
+		elementIndex: aTextureElementIndex;
+		yourself
+]
+
 { #category : #'mutual exclusion' }
 PompeiiDriver >> critical: aBlock [
 	mutex critical: aBlock

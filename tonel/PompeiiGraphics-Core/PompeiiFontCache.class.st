@@ -3,7 +3,7 @@ I am used for caching font glyphs in texture atlases.
 "
 Class {
 	#name : #PompeiiFontCache,
-	#superclass : #Object,
+	#superclass : #PompeiiMaterial,
 	#instVars : [
 		'font',
 		'bits',
@@ -29,6 +29,11 @@ PompeiiFontCache class >> for: font [
 { #category : #initialization }
 PompeiiFontCache class >> initialize [
 	FontTextureWidth := 2048
+]
+
+{ #category : #initialization }
+PompeiiFontCache >> activateMaterialIn: aSurface [
+	^ aSurface activateFontMaterial: self
 ]
 
 { #category : #accessing }

@@ -57,7 +57,7 @@ PompeiiMesh2DStrokeBuilder >> drawLineLoop: vertices [
 PompeiiMesh2DStrokeBuilder >> drawVertexLine: vertices [
 	| previousVertex vertex numVertices nextVertex normal deltaNormal |
 	width = 1 ifTrue: [ self drawLine: vertices ].
-	builder beginTriangles.
+	builder beginTriangles: currentMaterial.
 
 	previousVertex := vertices first.
 	vertex := vertices first.
@@ -86,7 +86,7 @@ PompeiiMesh2DStrokeBuilder >> drawVertexLine: vertices [
 PompeiiMesh2DStrokeBuilder >> drawVertexLoop: vertices [
 	| previousVertex normal vertex nextVertex deltaNormal numVertices |
 	width = 1 ifTrue: [ self drawLineLoop: vertices ].
-	builder beginTriangles.
+	builder beginTriangles: currentMaterial.
 
 	previousVertex := vertices last.
 	vertex := vertices first.

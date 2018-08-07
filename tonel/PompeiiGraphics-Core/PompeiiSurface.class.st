@@ -7,6 +7,21 @@ Class {
 	#category : #'PompeiiGraphics-Core'
 }
 
+{ #category : #'material activation' }
+PompeiiSurface >> activateFontMaterial: aFontMaterial [
+	self subclassResponsibility
+]
+
+{ #category : #'material activation' }
+PompeiiSurface >> activateTextureArrayElementMaterial: aFontMaterial [
+	self subclassResponsibility
+]
+
+{ #category : #'material activation' }
+PompeiiSurface >> activateTextureMaterial: aFontMaterial [
+	self subclassResponsibility
+]
+
 { #category : #converting }
 PompeiiSurface >> asForm [
 	self subclassResponsibility

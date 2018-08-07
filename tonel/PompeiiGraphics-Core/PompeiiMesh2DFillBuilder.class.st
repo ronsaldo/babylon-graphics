@@ -10,7 +10,7 @@ Class {
 { #category : #drawing }
 PompeiiMesh2DFillBuilder >> drawConvexPolygon: convexPolygon [
 	| numVertices |
-	builder beginTriangles.
+	builder beginTriangles: currentMaterial.
 	
 	convexPolygon vertices do: [ :vertex |
 		builder addVertex: (evaluator computeVertex: vertex)

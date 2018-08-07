@@ -6,7 +6,8 @@ Class {
 	#superclass : #Object,
 	#instVars : [
 		'builder',
-		'evaluator'
+		'evaluator',
+		'currentMaterial'
 	],
 	#category : #'PompeiiGraphics-Core-Shape'
 }
@@ -76,6 +77,37 @@ PompeiiMesh2DPartBuilder >> rectangle: aRectangle [
 { #category : #drawing }
 PompeiiMesh2DPartBuilder >> rectangle: aRectangle round: radius [
 	^ self draw: (PompeiiConvexPolygon rectangle: aRectangle round: radius)
+]
+
+{ #category : #accessing }
+PompeiiMesh2DPartBuilder >> texture: aTexture [
+	^ currentMaterial := builder driver createMaterialForTexture: aTexture
+]
+
+{ #category : #texture }
+PompeiiMesh2DPartBuilder >> texture: aTexture rectangle: aRectangle [
+	self
+		texture: aTexture;
+		textureTileRectangle: aRectangle;
+		rectangle: aRectangle
+]
+
+{ #category : #texture }
+PompeiiMesh2DPartBuilder >> textureArray: aTextureArray element: aTextureElementIndex [
+	^ currentMaterial := builder driver createMaterialForTextureArray: aTextureArray element: aTextureElementIndex
+]
+
+{ #category : #texture }
+PompeiiMesh2DPartBuilder >> textureArray: textureArray element: textureElement rectangle: aRectangle [
+	self
+		textureArray: textureArray element: textureElement;
+		textureTileRectangle: aRectangle;
+		rectangle: aRectangle
+]
+
+{ #category : #color }
+PompeiiMesh2DPartBuilder >> textureTileRectangle: aRectangle [
+	evaluator := PompeiiTexcoordAffineEvaluator new builder: builder; tileRectangle: aRectangle; yourself
 ]
 
 { #category : #color }
