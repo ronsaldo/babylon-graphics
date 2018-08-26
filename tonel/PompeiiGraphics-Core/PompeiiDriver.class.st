@@ -85,6 +85,31 @@ PompeiiDriver >> createMaterialForTextureArray: aTextureArray element: aTextureE
 		yourself
 ]
 
+{ #category : #'as yet unclassified' }
+PompeiiDriver >> createOSWindowAnimatedWithAttributes: attributes eventHandler: eventHandler [
+	| visible window |
+	visible := attributes visible.
+	attributes visible: false.
+	
+	window := OSWindowAnimated createWithAttributes: attributes.
+	window eventHandler: eventHandler.
+	visible ifTrue: [ window show ].
+	OSWindowRenderThread enqueueOperation: [ ]. "HACK:"
+	^ window
+]
+
+{ #category : #'as yet unclassified' }
+PompeiiDriver >> createOSWindowWithAttributes: attributes eventHandler: eventHandler [
+	| visible window |
+	visible := attributes visible.
+	attributes visible: false.
+	
+	window := OSWindow createWithAttributes: attributes.
+	window eventHandler: eventHandler.
+	visible ifTrue: [ window show ].
+	^ window
+]
+
 { #category : #'mutual exclusion' }
 PompeiiDriver >> critical: aBlock [
 	mutex critical: aBlock
@@ -107,6 +132,10 @@ PompeiiDriver >> initialize [
 { #category : #'instance creation' }
 PompeiiDriver >> mesh2DBuilder [
 	^ PompeiiMesh2DBuilder new driver: self
+]
+
+{ #category : #'as yet unclassified' }
+PompeiiDriver >> setupOSWindowAttributes: attributes [
 ]
 
 { #category : #'instance creation' }

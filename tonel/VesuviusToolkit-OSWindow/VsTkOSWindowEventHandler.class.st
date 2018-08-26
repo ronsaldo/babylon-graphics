@@ -43,6 +43,12 @@ VsTkOSWindowEventHandler >> visitTextInputEvent: anEvent [
 ]
 
 { #category : #visiting }
+VsTkOSWindowEventHandler >> visitWindowCloseEvent: anEvent [
+	anEvent suppressDefaultAction.
+	window ifNotNil: [ window close ]
+]
+
+{ #category : #visiting }
 VsTkOSWindowEventHandler >> visitWindowExposeEvent: anEvent [
 	anEvent suppressDefaultAction.
 	window ifNotNil: [ window dispatchExposed: anEvent ]

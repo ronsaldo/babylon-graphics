@@ -33,17 +33,18 @@ VsTkOSWindow >> checkSession [
 
 { #category : #'session management' }
 VsTkOSWindow >> checkSurface [
-	(surface isNotNil and: [ surface extent = self extent ]) ifTrue: [ ^ self ].
+	(surface isNotNil and: [ surface extent = self surfaceExtent ]) ifTrue: [ ^ self ].
 	surface ifNil: [ 
 		graphicsDriver := PompeiiDriver current.
-		surface := graphicsDriver surfaceWithExtent: self extent.
+		surface := graphicsDriver surfaceWithExtent: self surfaceExtent asIntegerPoint.
 	].
 
-	surface extent: self extent.
+	surface extent: self surfaceExtent.
 ]
 
 { #category : #'initialize-release' }
 VsTkOSWindow >> close [
+	surface destroy.
 	self osWindow ifNotNil: [ :handle | handle destroy ].
 	osWindow := nil
 ]
@@ -57,14 +58,15 @@ VsTkOSWindow >> createOSWindow [
 		visible: false;
 		windowCentered: windowCentered.
 		
-	attributes glAttributes: UFFIOpenGLContext glAttributes.
+	self validGraphicsDriver setupOSWindowAttributes: attributes.
 	
-	osWindow := OSWindowAnimated createWithAttributes: attributes eventHandler: (VsTkOSWindowEventHandler new window: self).
+	osWindow := self validGraphicsDriver createOSWindowAnimatedWithAttributes: attributes eventHandler: (VsTkOSWindowEventHandler new window: self).
 ]
 
 { #category : #'oswindow event dispatching' }
 VsTkOSWindow >> dispatchExposed: exposedEvent [
 	self changed.
+	self doFullRedraw
 ]
 
 { #category : #'oswindow event dispatching' }
@@ -200,7 +202,7 @@ VsTkOSWindow >> doFullRedraw [
 	(osWindow isNil or: [osWindow isVisible not]) ifTrue: [ ^ self ].
 	self checkSurface.
 	
-	surface drawToOSWindow: osWindow during:[ :canvas |
+	surface drawToOSWindow: osWindow during: [ :canvas |
 		canvas clear: Color transparent.
 		self fullDrawOn: canvas
 	].
@@ -294,6 +296,11 @@ VsTkOSWindow >> setMouseFocus: widget [
 	mouseFocus := widget.
 ]
 
+{ #category : #'as yet unclassified' }
+VsTkOSWindow >> surfaceExtent [
+	^ self extent asIntegerPoint
+]
+
 { #category : #'oswindow event dispatching' }
 VsTkOSWindow >> translateModifiers: modifiers [
 	^ modifiers
@@ -307,6 +314,11 @@ VsTkOSWindow >> translateMouseButton: aButton [
 { #category : #'oswindow event dispatching' }
 VsTkOSWindow >> translateMouseButtonState: aButtonState [
 	^ aButtonState
+]
+
+{ #category : #'as yet unclassified' }
+VsTkOSWindow >> validGraphicsDriver [
+	^ graphicsDriver ifNil: [ PompeiiDriver current ]
 ]
 
 { #category : #accessing }

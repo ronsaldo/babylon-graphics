@@ -27,6 +27,10 @@ PompeiiSurface >> asForm [
 	self subclassResponsibility
 ]
 
+{ #category : #initialize }
+PompeiiSurface >> destroy [
+]
+
 { #category : #drawing }
 PompeiiSurface >> drawDuring: aBlock [
 	self subclassResponsibility
