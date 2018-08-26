@@ -17,7 +17,10 @@ Class {
 		'buttonBorderColor',
 		'buttonLabelBorderExtent',
 		'labelColor',
-		'buttonLabelColor'
+		'buttonLabelColor',
+		'menuBarBackgroundColor',
+		'toolBarBackgroundColor',
+		'statusBarBackgroundColor'
 	],
 	#category : #'VesuviusToolkit-Core-Theme'
 }
@@ -63,6 +66,27 @@ VsTkBasicTheme >> buildLabel: label meshOn: meshBuilder [
 ]
 
 { #category : #'mesh widgets' }
+VsTkBasicTheme >> buildMenuBar: menuBar meshOn: meshBuilder [
+	meshBuilder fill
+		color: menuBarBackgroundColor;
+		rectangle: menuBar localBounds
+]
+
+{ #category : #'mesh widgets' }
+VsTkBasicTheme >> buildStatusBar: statusBar meshOn: meshBuilder [
+	meshBuilder fill
+		color: statusBarBackgroundColor;
+		rectangle: statusBar localBounds
+]
+
+{ #category : #'mesh widgets' }
+VsTkBasicTheme >> buildToolBar: toolBar meshOn: meshBuilder [
+	meshBuilder fill
+		color: toolBarBackgroundColor;
+		rectangle: toolBar localBounds
+]
+
+{ #category : #'mesh widgets' }
 VsTkBasicTheme >> computeButtonMinimalExtent: button [
 	^ buttonLabelBorderExtent + (self extentOfWidgetText: button label)
 ]
@@ -70,6 +94,21 @@ VsTkBasicTheme >> computeButtonMinimalExtent: button [
 { #category : #'mesh widgets' }
 VsTkBasicTheme >> computeLabelMinimalExtent: label [
 	^ self extentOfWidgetText: label text
+]
+
+{ #category : #'mesh widgets' }
+VsTkBasicTheme >> computeMenuBarMinimalExtent: button [
+	^ self extentOfWidgetText: ' '
+]
+
+{ #category : #'mesh widgets' }
+VsTkBasicTheme >> computeStatusBarMinimalExtent: button [
+	^ self extentOfWidgetText: ' '
+]
+
+{ #category : #'mesh widgets' }
+VsTkBasicTheme >> computeToolBarMinimalExtent: button [
+	^ self extentOfWidgetText: ' '
 ]
 
 { #category : #'mesh widgets' }
@@ -98,6 +137,10 @@ VsTkBasicTheme >> setParameters [
 	buttonNormalBottomColor := Color veryLightGray.
 	buttonDownTopColor := Color lightGray.
 	buttonDownBottomColor := Color lightGray muchLighter.
+	
+	menuBarBackgroundColor := Color lightGray.
+	toolBarBackgroundColor := Color lightGray lighter.
+	statusBarBackgroundColor := Color lightGray lighter.
 ]
 
 { #category : #'mesh widgets' }

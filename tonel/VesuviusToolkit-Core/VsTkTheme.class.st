@@ -31,12 +31,42 @@ VsTkTheme >> buildLabel: label meshOn: meshBuilder [
 ]
 
 { #category : #'mesh widgets' }
+VsTkTheme >> buildMenuBar: menuBar meshOn: meshBuilder [
+	self subclassResponsibility
+]
+
+{ #category : #'mesh widgets' }
+VsTkTheme >> buildStatusBar: statusBar meshOn: meshBuilder [
+	self subclassResponsibility
+]
+
+{ #category : #'mesh widgets' }
+VsTkTheme >> buildToolBar: toolBar meshOn: meshBuilder [
+	self subclassResponsibility
+]
+
+{ #category : #'mesh widgets' }
 VsTkTheme >> computeButtonMinimalExtent: button [
 	self subclassResponsibility
 ]
 
 { #category : #'mesh widgets' }
 VsTkTheme >> computeLabelMinimalExtent: button [
+	self subclassResponsibility
+]
+
+{ #category : #'mesh widgets' }
+VsTkTheme >> computeMenuBarMinimalExtent: button [
+	self subclassResponsibility
+]
+
+{ #category : #'mesh widgets' }
+VsTkTheme >> computeStatusBarMinimalExtent: button [
+	self subclassResponsibility
+]
+
+{ #category : #'mesh widgets' }
+VsTkTheme >> computeToolBarMinimalExtent: button [
 	self subclassResponsibility
 ]
 

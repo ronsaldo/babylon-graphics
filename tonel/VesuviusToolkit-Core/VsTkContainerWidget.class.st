@@ -15,6 +15,12 @@ VsTkContainerWidget >> add: aChild [
 	aChild parent: self.
 	children add: aChild.
 	self changed.
+	^ aChild
+]
+
+{ #category : #adding }
+VsTkContainerWidget >> addAll: aCollection [
+	aCollection do: [ :el | self add: el ]
 ]
 
 { #category : #accessing }

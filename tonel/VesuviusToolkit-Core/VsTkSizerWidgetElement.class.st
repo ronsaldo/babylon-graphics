@@ -19,7 +19,7 @@ VsTkSizerWidgetElement >> applyIntoExtent: newExtent position: position [
 
 { #category : #accessing }
 VsTkSizerWidgetElement >> extent [
-	^ widget extent
+	^ widget extentForLayoutComputation
 ]
 
 { #category : #accessing }

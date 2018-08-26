@@ -31,12 +31,16 @@ VsTkBoxSizer >> applyIntoExtent: newExtent position: position [
 	elements doWithIndex: [ :element :index |
 		proportion := element proportion.
 		proportion = 0 ifTrue: [
-			elementSize := elementSizes at: index.
+			element isExpanded ifTrue: [ 
+				elementSize := self composeDirection: (self boxDirectionOf: (elementSizes at: index)) withOpposite: oppositeSize.
+			] ifFalse: [ 
+				elementSize := elementSizes at: index.
+			].
 		] ifFalse: [
 			elementSize := self composeDirection: remainingSize * proportion // totalProportion withOpposite: oppositeSize.
 		].
 	
-		element applyIntoExtent: elementSize position: (self composeDirection: currentPosition  withOpposite: oppositePosition).
+		element applyIntoExtent: elementSize position: (self composeDirection: currentPosition withOpposite: oppositePosition).
 		currentPosition := currentPosition + (self boxDirectionOf: elementSize).
 	].
 	

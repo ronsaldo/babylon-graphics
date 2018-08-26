@@ -132,9 +132,15 @@ VsTkWidget >> extent [
 ]
 
 { #category : #accessing }
-VsTkWidget >> extent: anObject [
-	extent := anObject.
+VsTkWidget >> extent: aNewExtent [
+	extent = aNewExtent ifTrue: [ ^ self ].
+	extent := aNewExtent.
 	self boundsChanged.
+]
+
+{ #category : #accessing }
+VsTkWidget >> extentForLayoutComputation [
+	^ self minimalExtent
 ]
 
 { #category : #drawing }
