@@ -11,15 +11,36 @@ Class {
 		'keyboardFocus',
 		'mouseFocus',
 		'mouseCaptureOwner',
-		'captureHost'
+		'captureHost',
+		'currentClickPosition',
+		'lastClickTime'
+	],
+	#classVars : [
+		'DoubleClickThreshold'
 	],
 	#category : #'VesuviusToolkit-Core-Host'
 }
+
+{ #category : #initialization }
+VsTkVirtualHostWindow class >> initialize [
+	super initialize.
+	DoubleClickThreshold := 500 "Windows time according https://en.wikipedia.org/wiki/Double-click [August 2018]"
+]
+
+{ #category : #accessing }
+VsTkVirtualHostWindow >> beginClickAt: clickPosition [
+	currentClickPosition := clickPosition.
+]
 
 { #category : #accessing }
 VsTkVirtualHostWindow >> changed [
 	changed := true.
 	super changed
+]
+
+{ #category : #accessing }
+VsTkVirtualHostWindow >> dispatchMouseEvent: event [
+	self subclassResponsibility
 ]
 
 { #category : #drawing }
@@ -30,6 +51,28 @@ VsTkVirtualHostWindow >> doFullRedraw [
 { #category : #accessing }
 VsTkVirtualHostWindow >> drawPosition [
 	^ 0@0
+]
+
+{ #category : #accessing }
+VsTkVirtualHostWindow >> endClickAt: clickPosition withModifiers: clickModifiers [
+	| now |
+	(currentClickPosition closeTo: clickPosition) ifFalse: [ ^ self ].
+	
+	now := Time millisecondClockValue.
+	(lastClickTime isNotNil and: [ (now - lastClickTime) < DoubleClickThreshold ]) ifTrue: [ 
+		self dispatchMouseEvent: (VsTkDoubleClickEvent new
+			position: clickPosition;
+			modifiers: clickModifiers;
+			yourself).
+	] ifFalse: [ 
+		self dispatchMouseEvent: (VsTkClickEvent new
+			position: clickPosition;
+			modifiers: clickModifiers;
+			yourself).	
+	].
+	
+	lastClickTime := now
+
 ]
 
 { #category : #accessing }

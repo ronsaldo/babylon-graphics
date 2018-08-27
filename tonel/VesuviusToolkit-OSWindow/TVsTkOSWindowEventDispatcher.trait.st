@@ -47,6 +47,7 @@ TVsTkOSWindowEventDispatcher >> dispatchMouseButtonPressEvent: osEvent [
 		modifiers: (self translateModifiers: osEvent modifiers);
 		yourself.
 	
+	osEvent button = 1 ifTrue: [ self beginClickAt: osEvent position ].
 	self dispatchMouseEvent: event.
 ]
 
@@ -60,7 +61,9 @@ TVsTkOSWindowEventDispatcher >> dispatchMouseButtonReleaseEvent: osEvent [
 		modifiers: (self translateModifiers: osEvent modifiers);
 		yourself.
 		
-	self dispatchMouseEvent: event
+	self dispatchMouseEvent: event.
+	
+	osEvent button = 1 ifTrue: [ self endClickAt: osEvent position withModifiers: osEvent modifiers ].
 ]
 
 { #category : #'oswindow event dispatching' }

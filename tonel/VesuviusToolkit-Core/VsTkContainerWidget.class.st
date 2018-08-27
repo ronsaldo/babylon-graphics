@@ -93,6 +93,32 @@ VsTkContainerWidget >> fullDrawOn: canvas [
 ]
 
 { #category : #'events-processing' }
+VsTkContainerWidget >> handleClick: event [
+	| child childEvent |
+	child := self findChildForMousePosition: event position.
+	child ifNotNil: [
+		childEvent := event toLocalOrigin: child position.
+		child processEvent: childEvent.
+		event wasHandled: childEvent wasHandled.
+	].
+
+	^ super handleClick: event
+]
+
+{ #category : #'events-processing' }
+VsTkContainerWidget >> handleDoubleClick: event [
+	| child childEvent |
+	child := self findChildForMousePosition: event position.
+	child ifNotNil: [
+		childEvent := event toLocalOrigin: child position.
+		child processEvent: childEvent.
+		event wasHandled: childEvent wasHandled.
+	].
+
+	^ super handleDoubleClick: event
+]
+
+{ #category : #'events-processing' }
 VsTkContainerWidget >> handleMouseButtonDown: event [
 	| child childEvent |
 	child := self findChildForMousePosition: event position.

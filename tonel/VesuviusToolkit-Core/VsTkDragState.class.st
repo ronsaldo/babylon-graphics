@@ -48,13 +48,16 @@ VsTkDragState >> beginDragging [
 { #category : #'events-processing' }
 VsTkDragState >> finishDragging [
 	| event |
-	event := VsTkDragEndEvent new
-		initialButton: initialButton;
-		buttonState: currentButtonState;
-		modifiers: currentModifiers;
-		position: currentPosition;
-		yourself.
-	widget processEvent: event.
+	isDragging ifTrue: [ 
+		event := VsTkDragEndEvent new
+			initialButton: initialButton;
+			buttonState: currentButtonState;
+			modifiers: currentModifiers;
+			position: currentPosition;
+			yourself.
+		widget processEvent: event.
+	].
+
 	widget dragState: nil
 ]
 
@@ -81,11 +84,9 @@ VsTkDragState >> handleMouseButtonUp: event [
 	currentPosition := event position.
 	currentModifiers := event modifiers.
 	
-	isDragging ifTrue: [ 
-		event button = initialButton ifTrue: [
-			currentPosition := event position.
-			self finishDragging
-		].
+	event button = initialButton ifTrue: [
+		currentPosition := event position.
+		self finishDragging
 	].
 
 ]
@@ -93,7 +94,7 @@ VsTkDragState >> handleMouseButtonUp: event [
 { #category : #'events-processing' }
 VsTkDragState >> handleMouseMove: event [
 	| dragEvent |
-	currentPosition := initialPosition + event delta.	
+	currentPosition := event position.	
 	currentButtonState := event buttonState.
 	currentModifiers := event modifiers.
 	

@@ -11,6 +11,14 @@ TVsTkEventHandler >> handleActionEvent: anEvent [
 ]
 
 { #category : #'events-processing' }
+TVsTkEventHandler >> handleClick: anEvent [
+]
+
+{ #category : #'events-processing' }
+TVsTkEventHandler >> handleDoubleClick: anEvent [
+]
+
+{ #category : #'events-processing' }
 TVsTkEventHandler >> handleDragEndEvent: anEvent [
 ]
 

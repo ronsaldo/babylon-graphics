@@ -6,5 +6,5 @@ Class {
 
 { #category : #'initialize-release' }
 VsTkDragEndEvent >> handleWith: anEventHandler [
-	^ anEventHandler handleDragEndEvent: self
+	^ anEventHandler handleDragEnd: self
 ]
