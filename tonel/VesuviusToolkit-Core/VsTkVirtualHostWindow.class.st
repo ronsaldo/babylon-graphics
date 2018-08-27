@@ -81,9 +81,22 @@ VsTkVirtualHostWindow >> mouseFocus [
 	^ mouseFocus
 ]
 
-{ #category : #focus }
+{ #category : #initialization }
 VsTkVirtualHostWindow >> setKeyboardFocus: widget [
 	widget == keyboardFocus ifTrue: [ ^ self ].
+	
+	keyboardFocus ifNotNil: [
+		keyboardFocus
+			hasKeyboardFocus: false;
+			processEvent: VsTkGotFocus new
+	].
+	widget ifNotNil: [
+		widget
+			hasKeyboardFocus: true;
+			processEvent: VsTkLostFocus new
+	].
+
+	keyboardFocus := widget.
 ]
 
 { #category : #accessing }

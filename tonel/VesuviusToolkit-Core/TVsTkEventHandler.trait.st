@@ -11,6 +11,22 @@ TVsTkEventHandler >> handleActionEvent: anEvent [
 ]
 
 { #category : #'events-processing' }
+TVsTkEventHandler >> handleDragEndEvent: anEvent [
+]
+
+{ #category : #'events-processing' }
+TVsTkEventHandler >> handleDragEvent: anEvent [
+]
+
+{ #category : #'events-processing' }
+TVsTkEventHandler >> handleDragStartEvent: anEvent [
+]
+
+{ #category : #'events-processing' }
+TVsTkEventHandler >> handleDropEvent: anEvent [
+]
+
+{ #category : #'events-processing' }
 TVsTkEventHandler >> handleGotFocus: anEvent [
 ]
 

@@ -6,14 +6,24 @@ Trait {
 { #category : #'oswindow event dispatching' }
 TVsTkOSWindowEventDispatcher >> dispatchKeyDownEvent: osEvent [
 	| event |
-	event := VsTkKeyDownEvent new.
+	event := VsTkKeyDownEvent new
+		symbol: osEvent symbol;
+		scanCode: osEvent scanCode;
+		repeat: osEvent repeat;
+		modifiers: (self translateModifiers: osEvent modifiers);
+		yourself.
 	self dispatchKeyboardEvent: event
 ]
 
 { #category : #'oswindow event dispatching' }
-TVsTkOSWindowEventDispatcher >> dispatchKeyUpEvent: anEvent [
+TVsTkOSWindowEventDispatcher >> dispatchKeyUpEvent: osEvent [
 	| event |
-	event := VsTkKeyUpEvent new.
+	event := VsTkKeyUpEvent new
+		symbol: osEvent symbol;
+		scanCode: osEvent scanCode;
+		repeat: osEvent repeat;
+		modifiers: (self translateModifiers: osEvent modifiers);
+		yourself.
 	self dispatchKeyboardEvent: event
 ]
 
@@ -62,6 +72,7 @@ TVsTkOSWindowEventDispatcher >> dispatchMouseEvent: event [
 		self mouseCaptureOwner ifNil: [
 			result := self processEvent: event
 		] ifNotNil: [
+			Transcript show: 'dispatch to mouse capture.'; cr.
 			result := self mouseCaptureOwner processEvent: (event toLocalOrigin: self mouseCaptureOwner hostPosition) 
 		]
 	] doWhileTrue: [ oldMouseCapture ~~ self mouseCaptureOwner and: [ oldMouseCapture isNotNil ]].

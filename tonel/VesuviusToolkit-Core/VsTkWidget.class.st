@@ -12,7 +12,8 @@ Class {
 		'cachedMesh',
 		'hasMouseFocus',
 		'hasKeyboardFocus',
-		'eventDispatcher'
+		'eventDispatcher',
+		'dragState'
 	],
 	#classVars : [
 		'ZeroPoint'
@@ -72,6 +73,11 @@ VsTkWidget >> cachedMesh: anObject [
 	cachedMesh := anObject
 ]
 
+{ #category : #dragging }
+VsTkWidget >> canHaveDragEvents [
+	^ false
+]
+
 { #category : #focus }
 VsTkWidget >> canHaveKeyboardFocus [
 	^ false
@@ -92,9 +98,24 @@ VsTkWidget >> captureMouse: captureHost [
 	self host ifNotNil: [ :host | host setMouseCapture: self captureHost: captureHost]
 ]
 
+{ #category : #'mouse capture' }
+VsTkWidget >> captureMouseWithHost [
+	^ self captureMouse: true
+]
+
 { #category : #changes }
 VsTkWidget >> changed [
 	parent ifNotNil: [ parent changed ]
+]
+
+{ #category : #accessing }
+VsTkWidget >> dragState [
+	^ dragState
+]
+
+{ #category : #accessing }
+VsTkWidget >> dragState: aDragState [
+	dragState := aDragState
 ]
 
 { #category : #drawing }
@@ -174,7 +195,16 @@ VsTkWidget >> handleMouseButtonDown: event [
 	self canHaveMouseFocus ifTrue: [
 		self grabMouseFocus.
 		event wasHandled: true.
-	]
+	].
+
+	self canHaveDragEvents ifTrue: [
+		dragState ifNil: [
+			VsTkDragState new widget: self; handleMouseButtonDown: event. 
+		] ifNotNil: [
+			dragState handleMouseButtonDown: event
+		]
+	].
+
 ]
 
 { #category : #'events-processing' }
@@ -184,7 +214,14 @@ VsTkWidget >> handleMouseButtonUp: event [
 	self canHaveMouseFocus ifTrue: [
 		self grabMouseFocus.
 		event wasHandled: true.
-	]
+	].
+
+	self canHaveDragEvents ifTrue: [
+		dragState ifNotNil: [
+			dragState handleMouseButtonUp: event
+		]
+	].
+
 ]
 
 { #category : #'events-processing' }
@@ -194,8 +231,13 @@ VsTkWidget >> handleMouseMove: event [
 	self canHaveMouseFocus ifTrue: [
 		self grabMouseFocus.
 		event wasHandled: true.
-	]
+	].
 
+	self canHaveDragEvents ifTrue: [
+		dragState ifNotNil: [
+			dragState handleMouseMove: event
+		]
+	].
 ]
 
 { #category : #accessing }
@@ -332,6 +374,11 @@ VsTkWidget >> releaseMouse [
 { #category : #'mouse capture' }
 VsTkWidget >> releaseMouse: captureHost [
 	self host ifNotNil: [ :host | host setMouseCapture: nil captureHost: captureHost]
+]
+
+{ #category : #'mouse capture' }
+VsTkWidget >> releaseMouseWithHost [
+	^ self releaseMouse: true
 ]
 
 { #category : #accessing }
