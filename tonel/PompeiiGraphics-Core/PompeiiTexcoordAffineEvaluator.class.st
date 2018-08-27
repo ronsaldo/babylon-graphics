@@ -25,8 +25,8 @@ PompeiiTexcoordAffineEvaluator >> initialize [
 
 { #category : #accessing }
 PompeiiTexcoordAffineEvaluator >> tileRectangle: aRectangle [
-	transform translateBy: aRectangle origin negated;
-		scaleX: aRectangle width reciprocal Y: aRectangle height reciprocal
+	transform translateBy: aRectangle origin negated + (0@1);
+		scaleX: aRectangle width reciprocal Y: aRectangle height reciprocal negated
 ]
 
 { #category : #accessing }
