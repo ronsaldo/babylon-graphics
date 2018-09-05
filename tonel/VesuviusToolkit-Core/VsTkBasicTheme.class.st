@@ -20,7 +20,11 @@ Class {
 		'buttonLabelColor',
 		'menuBarBackgroundColor',
 		'toolBarBackgroundColor',
-		'statusBarBackgroundColor'
+		'statusBarBackgroundColor',
+		'menuItemLabelBorderExtent',
+		'menuItemSelectionColor',
+		'menuBackgroundColor',
+		'menuSeparatorColor'
 	],
 	#category : #'VesuviusToolkit-Core-Theme'
 }
@@ -66,10 +70,41 @@ VsTkBasicTheme >> buildLabel: label meshOn: meshBuilder [
 ]
 
 { #category : #'mesh widgets' }
+VsTkBasicTheme >> buildMenu: menu meshOn: meshBuilder [
+	meshBuilder fill
+		color: menuBackgroundColor;
+		rectangle: menu localBounds
+]
+
+{ #category : #'mesh widgets' }
 VsTkBasicTheme >> buildMenuBar: menuBar meshOn: meshBuilder [
 	meshBuilder fill
 		color: menuBarBackgroundColor;
 		rectangle: menuBar localBounds
+]
+
+{ #category : #'mesh widgets' }
+VsTkBasicTheme >> buildMenuItem: menuItem meshOn: meshBuilder [
+	menuItem selected ifTrue: [
+		meshBuilder fill
+			color: menuItemSelectionColor;
+			rectangle: menuItem localBounds.
+	].
+
+	meshBuilder text
+		color: labelColor;
+		font: self widgetFont;
+		draw: menuItem label onRectangleCenter: menuItem localBounds
+]
+
+{ #category : #'mesh widgets' }
+VsTkBasicTheme >> buildMenuSeparator: menuSeparator meshOn: meshBuilder [
+	| bounds |
+	bounds := menuSeparator localBounds.
+	meshBuilder stroke
+		color: menuSeparatorColor;
+		drawLine: { bounds leftCenter . bounds rightCenter }
+
 ]
 
 { #category : #'mesh widgets' }
@@ -99,6 +134,16 @@ VsTkBasicTheme >> computeLabelMinimalExtent: label [
 { #category : #'mesh widgets' }
 VsTkBasicTheme >> computeMenuBarMinimalExtent: button [
 	^ self extentOfWidgetText: ' '
+]
+
+{ #category : #'mesh widgets' }
+VsTkBasicTheme >> computeMenuItemMinimalExtent: menuItem [
+	^ menuItemLabelBorderExtent + (self extentOfWidgetText: menuItem label)
+]
+
+{ #category : #'mesh widgets' }
+VsTkBasicTheme >> computeMenuSeparatorMinimalExtent: menuItem [
+	^ 3@3
 ]
 
 { #category : #'mesh widgets' }
@@ -139,8 +184,14 @@ VsTkBasicTheme >> setParameters [
 	buttonDownBottomColor := Color lightGray muchLighter.
 	
 	menuBarBackgroundColor := Color lightGray.
+	menuBackgroundColor := Color lightGray.
+	menuSeparatorColor := Color veryVeryDarkGray.
+	menuItemLabelBorderExtent := 12@12.
+	menuItemSelectionColor := Color blue lighter lighter lighter.
+	
 	toolBarBackgroundColor := Color lightGray lighter.
 	statusBarBackgroundColor := Color lightGray lighter.
+
 ]
 
 { #category : #'mesh widgets' }

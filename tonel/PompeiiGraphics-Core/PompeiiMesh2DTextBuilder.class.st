@@ -114,12 +114,12 @@ PompeiiMesh2DTextBuilder >> initialize [
 	self position: ZeroPoint.
 ]
 
-{ #category : #initialization }
+{ #category : #accessing }
 PompeiiMesh2DTextBuilder >> position [
 	^ destPosition
 ]
 
-{ #category : #initialization }
+{ #category : #accessing }
 PompeiiMesh2DTextBuilder >> position: aPosition [
 	destPosition := aPosition.
 	rowStartPosition := destPosition.

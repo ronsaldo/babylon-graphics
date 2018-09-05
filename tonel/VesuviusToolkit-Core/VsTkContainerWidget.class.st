@@ -164,6 +164,12 @@ VsTkContainerWidget >> initialize [
 	autolayout := false.
 ]
 
+{ #category : #accessing }
+VsTkContainerWidget >> minimalExtent [
+	sizer ifNotNil: [ ^ sizer minimalExtent ].
+	^ super minimalExtent
+]
+
 { #category : #removing }
 VsTkContainerWidget >> remove: aChild [
 	children remove: aChild ifAbsent: [ ^ self ].

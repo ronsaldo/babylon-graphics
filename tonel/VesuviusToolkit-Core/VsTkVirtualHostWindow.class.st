@@ -114,6 +114,12 @@ VsTkVirtualHostWindow >> keyboardFocus [
 	^ keyboardFocus
 ]
 
+{ #category : #popup }
+VsTkVirtualHostWindow >> killPopUp: aWidget [
+	self assert: aWidget parent isNotNil.
+	aWidget parent remove: aWidget.
+]
+
 { #category : #accessing }
 VsTkVirtualHostWindow >> mouseCaptureOwner [
 	^ mouseCaptureOwner
@@ -122,6 +128,14 @@ VsTkVirtualHostWindow >> mouseCaptureOwner [
 { #category : #accessing }
 VsTkVirtualHostWindow >> mouseFocus [
 	^ mouseFocus
+]
+
+{ #category : #popup }
+VsTkVirtualHostWindow >> popUp: widget at: aPosition [
+	self assert: widget parent isNil.
+	widget prepareToPopUpIn: self.
+	self add: widget.
+	widget position: aPosition.
 ]
 
 { #category : #initialization }

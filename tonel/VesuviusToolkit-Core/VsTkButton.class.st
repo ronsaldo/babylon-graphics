@@ -38,7 +38,7 @@ VsTkButton >> handleMouseButtonUp: event [
 	self releaseMouse.
 	
 	(self hostBounds containsPoint: event position) ifTrue: [
-		self processEvent: (VsTkActionEvent source: self)
+		self fireActionEvent
 	]
 ]
 

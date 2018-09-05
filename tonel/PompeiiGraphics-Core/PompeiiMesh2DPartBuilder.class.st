@@ -69,6 +69,16 @@ PompeiiMesh2DPartBuilder >> horizontalGradientBounds: bounds start: startColor e
 		end: bounds origin + (bounds width @ 0) color: endColor
 ]
 
+{ #category : #color }
+PompeiiMesh2DPartBuilder >> paint: aPaint [
+	aPaint applyPaintInPompeiiBuilder: self
+]
+
+{ #category : #color }
+PompeiiMesh2DPartBuilder >> paint: aPaint tileRectangle: cellInterior [
+	aPaint applyPaintInPompeiiBuilder: self  tileRectangle: cellInterior
+]
+
 { #category : #drawing }
 PompeiiMesh2DPartBuilder >> rectangle: aRectangle [
 	^ self draw: aRectangle

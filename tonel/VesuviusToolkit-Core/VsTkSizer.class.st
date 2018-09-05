@@ -36,6 +36,6 @@ VsTkSizer >> initialize [
 ]
 
 { #category : #applying }
-VsTkSizer >> minimalExtents [
+VsTkSizer >> minimalExtent [
 	self subclassResponsibility
 ]

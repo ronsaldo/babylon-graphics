@@ -164,6 +164,11 @@ VsTkWidget >> extentForLayoutComputation [
 	^ self minimalExtent
 ]
 
+{ #category : #'event firing' }
+VsTkWidget >> fireActionEvent [
+	self processEvent: (VsTkActionEvent source: self)
+]
+
 { #category : #drawing }
 VsTkWidget >> fullDrawOn: canvas [
 	canvas transform restoreAfter: [
@@ -261,6 +266,11 @@ VsTkWidget >> hasMouseFocus: anObject [
 ]
 
 { #category : #accessing }
+VsTkWidget >> height [
+	^ extent y
+]
+
+{ #category : #accessing }
 VsTkWidget >> hide [
 	self visible: false
 ]
@@ -289,6 +299,11 @@ VsTkWidget >> initialize [
 	meshScope := false.
 	hasMouseFocus := false.
 	hasKeyboardFocus := false.
+]
+
+{ #category : #testing }
+VsTkWidget >> isMenuBar [
+	^ false
 ]
 
 { #category : #accessing }
@@ -341,6 +356,17 @@ VsTkWidget >> parent: anObject [
 	parent := anObject
 ]
 
+{ #category : #popup }
+VsTkWidget >> popUpIn: aHostWindow at: aPosition [
+	aHostWindow ifNil: [ ^ self ].
+	aHostWindow popUp: self at: aPosition
+]
+
+{ #category : #popup }
+VsTkWidget >> popUpKill [
+	self host ifNotNil: [:host | host killPopUp: self]
+]
+
 { #category : #accessing }
 VsTkWidget >> position [
 	^ position
@@ -357,6 +383,11 @@ VsTkWidget >> position: aPosition extent: aExtent [
 	position := aPosition.
 	extent := aExtent.
 	self boundsChanged.
+]
+
+{ #category : #popup }
+VsTkWidget >> prepareToPopUpIn: aHostWindow [
+
 ]
 
 { #category : #'events-processing' }
@@ -399,4 +430,9 @@ VsTkWidget >> visible [
 { #category : #accessing }
 VsTkWidget >> visible: anObject [
 	visible := anObject
+]
+
+{ #category : #accessing }
+VsTkWidget >> width [
+	^ extent x
 ]

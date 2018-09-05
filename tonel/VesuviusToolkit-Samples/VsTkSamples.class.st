@@ -73,3 +73,35 @@ VsTkSamples class >> exampleWindowWithButton [
 	window add: button.
 	window open
 ]
+
+{ #category : #'as yet unclassified' }
+VsTkSamples class >> exampleWindowWithMenuBar [
+	| window menuBar |
+	window := VsTkOSWindow new.
+	menuBar := VsTkMenuBar new.
+	menuBar
+		addMenuItem: 'File' menuWith: [:menu |
+			menu
+				addMenuItem: 'Submenu' menuWith: [ :submenu |
+					submenu
+						addMenuItem: 'Hello';
+						addMenuItem: 'World'
+					];
+				addMenuSeparator;
+				addMenuItem: 'Exit' action: [ :event | ]
+			];
+		addMenuItem: 'Help' menuWith: [:menu |
+			menu
+				addMenuItem: 'About' action: [ :event | ]
+			];
+		yourself.
+
+	window
+		add: menuBar;
+		sizer: (VsTkVerticalBoxSizer new
+			element: menuBar do: [ :el | el expand ];
+			yourself);
+		autolayout: true;
+		updateLayout.
+	window open
+]

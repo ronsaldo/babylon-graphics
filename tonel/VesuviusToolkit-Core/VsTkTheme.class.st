@@ -31,7 +31,22 @@ VsTkTheme >> buildLabel: label meshOn: meshBuilder [
 ]
 
 { #category : #'mesh widgets' }
+VsTkTheme >> buildMenu: menu meshOn: meshBuilder [
+	self subclassResponsibility
+]
+
+{ #category : #'mesh widgets' }
 VsTkTheme >> buildMenuBar: menuBar meshOn: meshBuilder [
+	self subclassResponsibility
+]
+
+{ #category : #'mesh widgets' }
+VsTkTheme >> buildMenuItem: label meshOn: meshBuilder [
+	self subclassResponsibility
+]
+
+{ #category : #'mesh widgets' }
+VsTkTheme >> buildMenuSeparator: label meshOn: meshBuilder [
 	self subclassResponsibility
 ]
 
@@ -61,6 +76,16 @@ VsTkTheme >> computeMenuBarMinimalExtent: button [
 ]
 
 { #category : #'mesh widgets' }
+VsTkTheme >> computeMenuItemMinimalExtent: button [
+	self subclassResponsibility
+]
+
+{ #category : #'mesh widgets' }
+VsTkTheme >> computeMenuSeparatorMinimalExtent: button [
+	self subclassResponsibility
+]
+
+{ #category : #'mesh widgets' }
 VsTkTheme >> computeStatusBarMinimalExtent: button [
 	self subclassResponsibility
 ]
@@ -73,6 +98,11 @@ VsTkTheme >> computeToolBarMinimalExtent: button [
 { #category : #'as yet unclassified' }
 VsTkTheme >> extentOfText: aText withFont: aFont [
 	^ (aFont widthOfString: aText) @ (aFont getPreciseAscent + aFont getPreciseDescent)
+]
+
+{ #category : #'mesh widgets' }
+VsTkTheme >> widgetFont [
+	self subclassResponsibility
 ]
 
 { #category : #'as yet unclassified' }
