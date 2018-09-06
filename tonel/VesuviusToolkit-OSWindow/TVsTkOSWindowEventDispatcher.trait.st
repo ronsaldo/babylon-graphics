@@ -98,7 +98,18 @@ TVsTkOSWindowEventDispatcher >> dispatchMouseMoveEvent: osEvent [
 ]
 
 { #category : #'oswindow event dispatching' }
-TVsTkOSWindowEventDispatcher >> dispatchMouseWheelEvent: anEvent [
+TVsTkOSWindowEventDispatcher >> dispatchMouseWheelEvent: osEvent [
+	| event |
+	event := VsTkMouseWheelEvent new
+		position: osEvent position;
+		scrollHorizontal: osEvent scrollHorizontal;
+		scrollVertical: osEvent scrollVertical;
+		buttonState: (self translateMouseButtonState: osEvent modifiers);
+		modifiers: (self translateModifiers: osEvent modifiers);
+		yourself.
+		
+	self dispatchMouseEvent: event
+	
 ]
 
 { #category : #'oswindow event dispatching' }

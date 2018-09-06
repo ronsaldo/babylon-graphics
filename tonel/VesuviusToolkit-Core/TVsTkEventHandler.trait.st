@@ -71,6 +71,10 @@ TVsTkEventHandler >> handleMouseMove: event [
 ]
 
 { #category : #'events-processing' }
+TVsTkEventHandler >> handleMouseWheel: event [
+]
+
+{ #category : #'events-processing' }
 TVsTkEventHandler >> handleTextInput: event [
 ]
 

@@ -31,3 +31,11 @@ PompeiiCanvas >> drawConvertedShapeWith: aConvertedShape [
 PompeiiCanvas >> driver [
 	self subclassResponsibility
 ]
+
+{ #category : #'as yet unclassified' }
+PompeiiCanvas >> popClipRectangle [
+]
+
+{ #category : #'as yet unclassified' }
+PompeiiCanvas >> pushClipRectangle: aRectangle [
+]

@@ -13,7 +13,8 @@ Class {
 		'hasMouseFocus',
 		'hasKeyboardFocus',
 		'eventDispatcher',
-		'dragState'
+		'dragState',
+		'clipContents'
 	],
 	#classVars : [
 		'ZeroPoint'
@@ -109,6 +110,16 @@ VsTkWidget >> changed [
 ]
 
 { #category : #accessing }
+VsTkWidget >> clipContents [
+	^ clipContents
+]
+
+{ #category : #accessing }
+VsTkWidget >> clipContents: anObject [
+	clipContents := anObject
+]
+
+{ #category : #accessing }
 VsTkWidget >> dragState [
 	^ dragState
 ]
@@ -173,7 +184,9 @@ VsTkWidget >> fireActionEvent [
 VsTkWidget >> fullDrawOn: canvas [
 	canvas transform restoreAfter: [
 		canvas transform translateBy: self drawPosition.
-		self drawOn: canvas
+		(clipContents and: meshScope) ifTrue: [ canvas pushClipRectangle: self localBounds ].
+		self drawOn: canvas.
+		(clipContents and: meshScope) ifTrue: [ canvas popClipRectangle ].
 	]
 	
 ]
@@ -299,6 +312,7 @@ VsTkWidget >> initialize [
 	meshScope := false.
 	hasMouseFocus := false.
 	hasKeyboardFocus := false.
+	clipContents := true.
 ]
 
 { #category : #testing }

@@ -49,7 +49,7 @@ VsTkContainerWidget >> buildMeshOn: aMeshBuilder [
 		].
 	
 		self buildMeshContentOn: aMeshBuilder.
-		children do: [ :child | child buildMeshOn: aMeshBuilder ].
+		children do: [ :child | child meshScope ifFalse: [ child buildMeshOn: aMeshBuilder ] ].
 	]
 ]
 
@@ -85,9 +85,11 @@ VsTkContainerWidget >> fit [
 VsTkContainerWidget >> fullDrawOn: canvas [
 	canvas transform restoreAfter: [
 		canvas transform translateBy: self drawPosition. 
+		(clipContents and: meshScope) ifTrue: [ canvas pushClipRectangle: self localBounds ].
 		self drawMeshOn: canvas.
 		self drawOn: canvas.
-		children do: [ :child | child fullDrawOn: canvas]
+		children do: [ :child | child fullDrawOn: canvas].
+		(clipContents and: meshScope) ifTrue: [ canvas popClipRectangle ].
 	].
 
 ]
@@ -155,6 +157,19 @@ VsTkContainerWidget >> handleMouseMove: event [
 	].
 
 	^ super handleMouseMove: event
+]
+
+{ #category : #'events-processing' }
+VsTkContainerWidget >> handleMouseWheel: event [
+	| child childEvent |
+	child := self findChildForMousePosition: event position.
+	child ifNotNil: [
+		childEvent := event toLocalOrigin: child position.
+		child processEvent: childEvent.
+		event wasHandled: childEvent wasHandled.
+	].
+
+	^ super handleMouseWheel: event
 ]
 
 { #category : #initialization }
