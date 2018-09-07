@@ -9,7 +9,8 @@ Class {
 		'destPosition',
 		'rowStartPosition',
 		'preciseAscent',
-		'preciseDescent'
+		'preciseDescent',
+		'columnIndex'
 	],
 	#classVars : [
 		'ZeroPoint'
@@ -45,6 +46,10 @@ PompeiiMesh2DTextBuilder >> draw: aText onRectangleCenterRight: aRectangle [
 { #category : #drawing }
 PompeiiMesh2DTextBuilder >> drawCharacter: aCharacter [
 	| glyphInfo extent position offset |
+	(String crlf includes: aCharacter) ifTrue: [ ^ self newline ].
+	aCharacter = Character tab ifTrue: [ ^ self tab ].
+	aCharacter = Character space ifTrue: [ ^ self space ].
+
 	builder beginTriangles: font.
 	
 	glyphInfo := font character: aCharacter.
@@ -61,7 +66,8 @@ PompeiiMesh2DTextBuilder >> drawCharacter: aCharacter [
 		addIndex: 0; addIndex: 1; addIndex: 2;
 		addIndex: 2; addIndex: 3; addIndex: 0.
 		
-	destPosition := destPosition + (glyphInfo advance x @ 0)
+	destPosition := destPosition + (glyphInfo advance x @ 0).
+	columnIndex := columnIndex + 1
 	
 ]
 
@@ -114,6 +120,13 @@ PompeiiMesh2DTextBuilder >> initialize [
 	self position: ZeroPoint.
 ]
 
+{ #category : #drawing }
+PompeiiMesh2DTextBuilder >> newline [
+	rowStartPosition := rowStartPosition + (0@ font lineHeight).
+	destPosition := rowStartPosition.
+	columnIndex := 0
+]
+
 { #category : #accessing }
 PompeiiMesh2DTextBuilder >> position [
 	^ destPosition
@@ -123,6 +136,7 @@ PompeiiMesh2DTextBuilder >> position [
 PompeiiMesh2DTextBuilder >> position: aPosition [
 	destPosition := aPosition.
 	rowStartPosition := destPosition.
+	columnIndex := 0.
 ]
 
 { #category : #accessing }
@@ -133,4 +147,25 @@ PompeiiMesh2DTextBuilder >> preciseAscent [
 { #category : #accessing }
 PompeiiMesh2DTextBuilder >> preciseDescent [
 	^ preciseDescent ifNil: [ preciseDescent := font getPreciseDescent ]
+]
+
+{ #category : #drawing }
+PompeiiMesh2DTextBuilder >> space [
+	destPosition := destPosition + (self spaceWidth@0).
+	columnIndex := columnIndex + 1
+]
+
+{ #category : #drawing }
+PompeiiMesh2DTextBuilder >> spaceWidth [
+	^ (font character: Character space) advance x
+]
+
+{ #category : #drawing }
+PompeiiMesh2DTextBuilder >> tab [
+	| newColumnIndex spaceCount |
+	newColumnIndex := columnIndex + 3 alignedTo: 4.
+	spaceCount := newColumnIndex - columnIndex.
+	columnIndex := newColumnIndex.
+
+	destPosition := destPosition + ((self spaceWidth*spaceCount)@0)
 ]

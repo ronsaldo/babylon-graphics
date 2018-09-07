@@ -37,6 +37,11 @@ PompeiiFontCache >> activateMaterialIn: aSurface [
 ]
 
 { #category : #accessing }
+PompeiiFontCache >> ascent [
+	^ font ascent
+]
+
+{ #category : #accessing }
 PompeiiFontCache >> bits [
 	^ bits
 ]
@@ -88,6 +93,11 @@ PompeiiFontCache >> createGlyphFormEntry: glyphForm [
 		linearAdvance: glyphForm linearAdvance;
 		offset: glyphForm offset;
 		yourself
+]
+
+{ #category : #accessing }
+PompeiiFontCache >> descent [
+	^ font descent
 ]
 
 { #category : #'instance creation' }
@@ -191,6 +201,11 @@ PompeiiFontCache >> initialize [
 	codePointMap := Dictionary new.
 	maxCurrentHeight := 0.
 	hasLatin1 := false.
+]
+
+{ #category : #accessing }
+PompeiiFontCache >> lineHeight [
+	^ font height
 ]
 
 { #category : #private }
