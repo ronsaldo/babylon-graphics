@@ -4,7 +4,8 @@ Class {
 	#traits : 'TVsTkOSWindowEventDispatcher',
 	#classTraits : 'TVsTkOSWindowEventDispatcher classTrait',
 	#instVars : [
-		'osWindow'
+		'osWindow',
+		'osWindowMutex'
 	],
 	#category : #'VesuviusToolkit-OSWindow'
 }
@@ -22,12 +23,15 @@ VsTkOSWindow >> createOSWindow [
 	attributes := OSWindowAttributes new.
 	attributes extent: self extent;
 		position: self position;
-		visible: false;
+		visible: visible;
 		windowCentered: windowCentered.
 		
 	self validGraphicsDriver setupOSWindowAttributes: attributes.
 	
-	osWindow := self validGraphicsDriver createOSWindowAnimatedWithAttributes: attributes eventHandler: (VsTkOSWindowEventHandler new window: self).
+	osWindowMutex critical: [
+		osWindow := self validGraphicsDriver createOSWindowAnimatedWithAttributes: attributes eventHandler: (VsTkOSWindowEventHandler new window: self).
+	]
+
 ]
 
 { #category : #'oswindow event dispatching' }
@@ -66,16 +70,25 @@ VsTkOSWindow >> dispatchShown: shownEvent [
 
 { #category : #drawing }
 VsTkOSWindow >> doFullRedraw [
-	self checkSession.
-	(osWindow isNil or: [osWindow isVisible not]) ifTrue: [ ^ self ].
-	self checkSurface.
-	
-	surface drawToOSWindow: osWindow during: [ :canvas |
-		canvas clear: Color transparent.
-		self fullDrawOn: canvas
+	osWindowMutex critical: [ 
+		self checkSession.
+		(osWindow isNil or: [osWindow isVisible not]) ifTrue: [ ^ self ].
+		self checkSurface.
+		
+		surface drawToOSWindow: osWindow during: [ :canvas |
+			canvas clear: Color transparent.
+			self fullDrawOn: canvas
+		].
+
+		changed := false
 	].
 
-	changed := false
+]
+
+{ #category : #initialization }
+VsTkOSWindow >> initialize [
+	super initialize.
+	osWindowMutex := Mutex new.
 ]
 
 { #category : #'session management' }
@@ -92,8 +105,11 @@ VsTkOSWindow >> open [
 
 { #category : #accessing }
 VsTkOSWindow >> osWindow [
-	self checkSession.
-	^ osWindow
+	osWindowMutex critical: [ 
+		self checkSession.
+		^ osWindow
+	]
+
 ]
 
 { #category : #accessing }

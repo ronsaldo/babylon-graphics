@@ -181,7 +181,6 @@ PompeiiFontCache >> height [
 { #category : #private }
 PompeiiFontCache >> increaseHeighTo: newHeight [
 	| newBits |
-	self error: 'Cannot increase font size'.
 	newBits := ByteArray new: newHeight * FontTextureWidth.
 	bits ifNotNil: [ LibC memCopy: bits to: newBits size: bits size ].
 	bits := newBits.

@@ -32,7 +32,7 @@ VsTkAbstractHostWindow >> checkSurface [
 
 { #category : #focus }
 VsTkAbstractHostWindow >> close [
-	surface destroy.
+	surface ifNotNil: #destroy.
 ]
 
 { #category : #initialization }

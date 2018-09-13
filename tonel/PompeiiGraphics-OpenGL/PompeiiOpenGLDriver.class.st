@@ -198,6 +198,11 @@ PompeiiOpenGLDriver >> programWithVertexSource: vertexSource fragmentSource: fra
 	^ program
 ]
 
+{ #category : #'as yet unclassified' }
+PompeiiOpenGLDriver >> setupOSWindowAttributes: attributes [
+	attributes glAttributes: UFFIOpenGLContext glAttributes
+]
+
 { #category : #'instance creation' }
 PompeiiOpenGLDriver >> surfaceWithExtent: anExtent [
 	^ PompeiiOpenGLSurface extent: anExtent driver: self
