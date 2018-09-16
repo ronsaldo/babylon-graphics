@@ -38,6 +38,7 @@ PompeiiDriver class >> isSupported [
 PompeiiDriver class >> pickDriver [
 	self allSubclassesDo: [ :sc | sc isSuitable ifTrue: [ ^ sc new ] ].
 	self allSubclassesDo: [ :sc | sc isSupported ifTrue: [ ^ sc new ] ].
+	Smalltalk globals at: #PompeiiSoftRenderingDriver ifPresent: [ :fallback | ^ fallback new ].
 	self error: 'Failed to pick a Pompeii driver'.
 ]
 

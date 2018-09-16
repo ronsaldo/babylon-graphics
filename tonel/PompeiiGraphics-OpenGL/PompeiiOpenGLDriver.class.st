@@ -33,12 +33,12 @@ PompeiiOpenGLDriver class >> initialize [
 
 { #category : #testing }
 PompeiiOpenGLDriver class >> isSuitable [
-	^ true
+	^ false
 ]
 
 { #category : #testing }
 PompeiiOpenGLDriver class >> isSupported [
-	^ true
+	^ false
 ]
 
 { #category : #compiling }

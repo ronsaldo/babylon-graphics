@@ -23,6 +23,16 @@ PompeiiMesh2D >> asWavefrontOBJ [
 	]
 ]
 
+{ #category : #'primitive evaluation' }
+PompeiiMesh2D >> evaluatePrimitivesWith: aPrimitiveEvaluator [
+	aPrimitiveEvaluator withVertices: vertices do: [ 
+		submeshes do: [ :submesh |
+			submesh evaluatePrimitivesWith: aPrimitiveEvaluator vertices: vertices
+		]
+	].
+
+]
+
 { #category : #converting }
 PompeiiMesh2D >> saveWavefrontOBJ: fileName [
 	fileName asFileReference writeStreamDo: [ :out |

@@ -1,8 +1,33 @@
 Extension { #name : #Number }
 
 { #category : #'*PompeiiGraphics-Core' }
+Number >> asFixedPointForPompeiiRendering [
+	^ (self * 1024) floor
+]
+
+{ #category : #'*PompeiiGraphics-Core' }
 Number >> asPompeiiComplex [
 	^ PompeiiComplex r: self
+]
+
+{ #category : #'*PompeiiGraphics-Core' }
+Number >> asPompeiiLinearColor [
+	^ PompeiiLinearColor r: self g: self b: self a: self
+]
+
+{ #category : #'*PompeiiGraphics-Core' }
+Number >> fromFixedPointForPompeiiRendering [
+	^ self * "1.0 /1024" 0.0009765625
+]
+
+{ #category : #'*PompeiiGraphics-Core' }
+Number >> pompeiiEncodeColorChannel [
+	^ (self * 255.0 + 0.5) asInteger min: 255 max: 0
+]
+
+{ #category : #'*PompeiiGraphics-Core' }
+Number >> pompeiiEncodeLinearToSRGBColorChannel [
+	^ PompeiiLinearColor encodeSRGBChannel: self
 ]
 
 { #category : #'*PompeiiGraphics-Core' }

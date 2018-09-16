@@ -11,11 +11,11 @@ Color >> applyPaintInPompeiiBuilder: builder tileRectangle: aRectangle [
 ]
 
 { #category : #'*PompeiiGraphics-Core' }
-Color >> pompeiiLinearToSRGB [
-	^ Color r: self red pompeiiLinearToSRGB g: self green pompeiiLinearToSRGB b: self blue pompeiiLinearToSRGB alpha: self alpha
+Color >> asPompeiiLinearColor [
+	^ PompeiiLinearColor r: self red pompeiiSRGBToLinear g: self green pompeiiSRGBToLinear b: self blue pompeiiSRGBToLinear a: self alpha
 ]
 
 { #category : #'*PompeiiGraphics-Core' }
-Color >> pompeiiSRGBToLinear [
-	^ Color r: self red pompeiiLinearToSRGB g: self green pompeiiLinearToSRGB b: self blue pompeiiLinearToSRGB alpha: self alpha
+Color >> pompeiiLinearToSRGB [
+	^ Color r: self red pompeiiSRGBToLinear g: self green pompeiiSRGBToLinear b: self blue pompeiiSRGBToLinear alpha: self alpha
 ]
