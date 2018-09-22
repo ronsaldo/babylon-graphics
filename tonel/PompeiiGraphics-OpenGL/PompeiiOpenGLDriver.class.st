@@ -33,12 +33,12 @@ PompeiiOpenGLDriver class >> initialize [
 
 { #category : #testing }
 PompeiiOpenGLDriver class >> isSuitable [
-	^ true
+	^ false
 ]
 
 { #category : #testing }
 PompeiiOpenGLDriver class >> isSupported [
-	^ true
+	^ false
 ]
 
 { #category : #compiling }
@@ -196,6 +196,11 @@ PompeiiOpenGLDriver >> programWithVertexSource: vertexSource fragmentSource: fra
 	].
 
 	^ program
+]
+
+{ #category : #'as yet unclassified' }
+PompeiiOpenGLDriver >> setupOSWindowAttributes: attributes [
+	attributes glAttributes: UFFIOpenGLContext glAttributes
 ]
 
 { #category : #'instance creation' }

@@ -38,6 +38,7 @@ PompeiiDriver class >> isSupported [
 PompeiiDriver class >> pickDriver [
 	self allSubclassesDo: [ :sc | sc isSuitable ifTrue: [ ^ sc new ] ].
 	self allSubclassesDo: [ :sc | sc isSupported ifTrue: [ ^ sc new ] ].
+	Smalltalk globals at: #PompeiiSoftRenderingDriver ifPresent: [ :fallback | ^ fallback new ].
 	self error: 'Failed to pick a Pompeii driver'.
 ]
 
@@ -87,27 +88,30 @@ PompeiiDriver >> createMaterialForTextureArray: aTextureArray element: aTextureE
 
 { #category : #'as yet unclassified' }
 PompeiiDriver >> createOSWindowAnimatedWithAttributes: attributes eventHandler: eventHandler [
+	^ self createOSWindowOfClass: OSWindow animatedWithAttributes: attributes eventHandler: eventHandler
+]
+
+{ #category : #'as yet unclassified' }
+PompeiiDriver >> createOSWindowOfClass: osWindowClass animatedWithAttributes: attributes eventHandler: eventHandler [
 	| visible window |
-	visible := attributes visible.
-	attributes visible: false.
 	
-	window := OSWindowAnimated createWithAttributes: attributes.
-	window eventHandler: eventHandler.
-	visible ifTrue: [ window show ].
-	OSWindowRenderThread enqueueOperation: [ ]. "HACK:"
+	self flag: 'HACK: Remove this hack when the latest version of OSWindow is integrated.'.
+	(osWindowClass respondsTo: #createWithAttributes:eventHandler:) ifTrue: [
+		window := osWindowClass createWithAttributes: attributes eventHandler: eventHandler
+	] ifFalse: [ 
+		visible := attributes visible.
+		attributes visible: false.
+		window := osWindowClass createWithAttributes: attributes.
+		window eventHandler: eventHandler.
+		visible ifTrue: [ window show ].
+		OSWindowRenderThread enqueueOperation: [ ]. "HACK:"
+	].
 	^ window
 ]
 
 { #category : #'as yet unclassified' }
 PompeiiDriver >> createOSWindowWithAttributes: attributes eventHandler: eventHandler [
-	| visible window |
-	visible := attributes visible.
-	attributes visible: false.
-	
-	window := OSWindow createWithAttributes: attributes.
-	window eventHandler: eventHandler.
-	visible ifTrue: [ window show ].
-	^ window
+	^ self createOSWindowOfClass: OSWindow animatedWithAttributes: attributes eventHandler: eventHandler
 ]
 
 { #category : #'mutual exclusion' }

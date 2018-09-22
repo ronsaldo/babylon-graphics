@@ -55,5 +55,7 @@ PompeiiMeshPartEvaluator >> computeVertex: aPosition texcoord: aTexcoord [
 
 { #category : #'as yet unclassified' }
 PompeiiMeshPartEvaluator >> interpolateColorStart: startColor end: endColor alpha: alpha [
-	^ ((startColor pompeiiSRGBToLinear * (1.0 - alpha)) + (endColor pompeiiSRGBToLinear * alpha)) pompeiiLinearToSRGB
+	alpha <= 0.0 ifTrue: [ ^ startColor ].
+	alpha >= 1.0 ifTrue: [ ^ endColor ].
+	^ ((startColor asPompeiiLinearColor * (1.0 - alpha)) + (endColor asPompeiiLinearColor * alpha)) asColor
 ]
