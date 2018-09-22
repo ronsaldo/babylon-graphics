@@ -23,10 +23,12 @@ BaselineOfBabylonGraphics >> baseline: spec [
 				spec requires: #(#'BabylonGraphics-Core' ). ];
 			package: #'BabylonGraphics-OpenGL' with: [
 				spec requires: #(#'BabylonGraphics-Core' #'UFFIOpenGL' ). ];
+			package: #'BabylonGraphics-SoftRendering' with: [
+				spec requires: #(#'BabylonGraphics-Core'). ];
 			package: #'BabylonGraphics-Tests' with: [
 				spec requires: #('BabylonGraphics-Core' ). ].
-		spec group: #'default' with: #(#'BabylonGraphics-Core' #'BabylonGraphics-Examples' #'BabylonGraphics-OpenGL' #'BabylonGraphics-Tests').
-		spec group: #'API' with: #(#'BabylonGraphics-Core' #'BabylonGraphics-Examples' #'BabylonGraphics-Tests')
+		spec group: #'default' with: #(#'BabylonGraphics-Core' #'BabylonGraphics-Examples' #'BabylonGraphics-OpenGL' #'BabylonGraphics-Tests' #'BabylonGraphics-SoftRendering').
+		spec group: #'API' with: #(#'BabylonGraphics-Core' #'BabylonGraphics-Examples' #'BabylonGraphics-Tests' #'BabylonGraphics-SoftRendering')
 		].
 		
 
