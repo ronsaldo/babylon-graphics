@@ -221,3 +221,24 @@ BabylonSurfaceExamples class >> exampleTriangle [
 		]
 	]
 ]
+
+{ #category : #'instance creation' }
+BabylonSurfaceExamples class >> exampleTriangleGradient [
+	| builder mesh |
+	builder := BabylonMesh2DBuilder new.
+	
+	builder
+		beginTriangles;
+		addVertex: (100@300) color: Color red;
+		addVertex: (600@300) color: Color green;
+		addVertex: (300@50) color: Color blue;
+		addIndex: 0; addIndex: 1; addIndex: 2.
+	mesh := builder mesh.
+	
+	self exampleSurfaceDo: [ :surface |
+		surface drawDuring: [ :canvas |
+			canvas clear: Color white.
+			canvas draw: mesh
+		]
+	]
+]

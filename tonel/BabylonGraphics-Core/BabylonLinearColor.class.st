@@ -7,32 +7,20 @@ Class {
 		'b',
 		'a'
 	],
-	#classVars : [
-		'LinearDecodeTable',
-		'SRGBDecodeTable',
-		'SRGBEncodeTable'
+	#pools : [
+		'BabylonLookupTables'
 	],
 	#category : #'BabylonGraphics-Core-Color'
 }
 
-{ #category : #'class initialization' }
-BabylonLinearColor class >> computeLookupTables [
-	SRGBDecodeTable := (1 to: 256) collect: [ :i |
-		((i-1) / 255.0) babylonSRGBToLinear
-	].
-
-	LinearDecodeTable := (1 to: 256) collect: [ :i |
-		(i-1) / 255.0
-	].
-
-	SRGBEncodeTable := (1 to: 4096) collect: [ :i |
-		((i-1)/4095.0) babylonLinearToSRGB babylonEncodeColorChannel
-	].
+{ #category : #'as yet unclassified' }
+BabylonLinearColor class >> decodeBGRA: pixelValue [
+	^ self new decodeBGRA: pixelValue
 ]
 
 { #category : #'class initialization' }
 BabylonLinearColor class >> decodeLinearChannel: value [
-	^ SRGBDecodeTable at: value + 1.
+	^ LinearDecodeTable at: value + 1.
 ]
 
 { #category : #'class initialization' }
@@ -46,11 +34,6 @@ BabylonLinearColor class >> encodeSRGBChannel: value [
 	value <= 0.0 ifTrue: [ ^ 0 ].
 	
 	^ SRGBEncodeTable at: (value*4095.0 + 0.5) asInteger + 1.
-]
-
-{ #category : #'class initialization' }
-BabylonLinearColor class >> initialize [
-	self computeLookupTables
 ]
 
 { #category : #'as yet unclassified' }
@@ -111,6 +94,17 @@ BabylonLinearColor >> asColor [
 	^ Color r: r babylonLinearToSRGB g: g babylonLinearToSRGB b: b babylonLinearToSRGB alpha: a
 ]
 
+{ #category : #converting }
+BabylonLinearColor >> asPremultipliedBGRA32 [
+	| er eg eb ea |
+	er := self encodeSRGBChannel: a*r.
+	eg := self encodeSRGBChannel: a*g.
+	eb := self encodeSRGBChannel: a*b.
+	ea := self encodeLinearChannel: a.
+	
+	^ eb | (eg << 8) | (er << 16) | (ea << 24)
+]
+
 { #category : #accessing }
 BabylonLinearColor >> b [
 	^ b
@@ -119,6 +113,14 @@ BabylonLinearColor >> b [
 { #category : #accessing }
 BabylonLinearColor >> b: anObject [
 	b := anObject
+]
+
+{ #category : #converting }
+BabylonLinearColor >> decodeBGRA: pixelValue [
+	b := SRGBDecodeTable at: (pixelValue & 16rff) + 1.
+	g := SRGBDecodeTable at: (pixelValue >> 8) & 16rff + 1.
+	r := SRGBDecodeTable at: (pixelValue >> 16) & 16rff + 1.
+	a := LinearDecodeTable at: (pixelValue >> 24) & 16rff + 1.
 ]
 
 { #category : #converting }

@@ -6,12 +6,32 @@ Class {
 		'currentUnconvertedVertices',
 		'currentConvertedVertices',
 		'sampleCount',
-		'renderForm',
 		'resolveForm',
-		'resolutionMultiplier'
+		'renderBuffer',
+		'renderBufferPitch',
+		'sampleDistribution',
+		'passingSamples',
+		'blendingModel'
+	],
+	#classVars : [
+		'MultiSamplingDistributions'
 	],
 	#category : #'BabylonGraphics-SoftRendering'
 }
+
+{ #category : #'class initialization' }
+BabylonSoftRenderingSurface class >> computeMultiSamplingDistributionForSize: size [
+	| center radius startAngle angle |
+	center := 2048@2048.
+	radius := 1024.
+	startAngle := -45.
+	size = 1 ifTrue: [ ^ { center } ].
+	
+	^ ((1 to: size) collect: [ :i |
+		angle := startAngle + (360*(i - 1) / size).
+		(radius * angle degreeCos + center x) floor @ (radius * angle degreeSin + center y) floor
+	]) , { center }
+]
 
 { #category : #geometry }
 BabylonSoftRenderingSurface class >> defaultSampleCount [
@@ -21,6 +41,18 @@ BabylonSoftRenderingSurface class >> defaultSampleCount [
 { #category : #geometry }
 BabylonSoftRenderingSurface class >> extent: anExtent [
 	^ self basicNew initializeWithExtent: anExtent sampleCount: self defaultSampleCount
+]
+
+{ #category : #'class initialization' }
+BabylonSoftRenderingSurface class >> initialize [
+	MultiSamplingDistributions := (1 to: 8) collect: [ :i |
+		self computeMultiSamplingDistributionForSize: i
+	]
+]
+
+{ #category : #blending }
+BabylonSoftRenderingSurface >> alphaOver [
+	blendingModel := BabylonBlendingModeAlphaOver uniqueInstance.
 ]
 
 { #category : #converting }
@@ -36,7 +68,9 @@ BabylonSoftRenderingSurface >> barycentricAt: p forSegmentFrom: start to: end [
 
 { #category : #'drawing commands' }
 BabylonSoftRenderingSurface >> clear: aColor [
-	renderForm fillColor: aColor
+	| pixelValue |
+	pixelValue := aColor pixelWordForDepth: resolveForm depth.
+	1 to: renderBuffer size do: [ :i | renderBuffer at: i put: pixelValue ]
 ]
 
 { #category : #geometry }
@@ -54,6 +88,7 @@ BabylonSoftRenderingSurface >> computeTriangleOrientationP1: p1 p2: p2 p3: p3 [
 { #category : #drawing }
 BabylonSoftRenderingSurface >> drawDuring: aBlock [
 	| canvas |
+	self setSurfaceState.
 	canvas := BabylonSoftRenderingCanvas new surface: self.
 	aBlock value: canvas
 ]
@@ -97,39 +132,62 @@ BabylonSoftRenderingSurface >> initialize [
 ]
 
 { #category : #initialization }
-BabylonSoftRenderingSurface >> initializeWithExtent: anExtent [
-	renderForm := Form extent: anExtent depth: -32.
-	self initialize.
-]
-
-{ #category : #initialization }
 BabylonSoftRenderingSurface >> initializeWithExtent: anExtent sampleCount: aSampleCount [
+	self assert: aSampleCount >= 1.
 	sampleCount := aSampleCount.
 	resolveForm := Form extent: anExtent depth: -32.
-	resolutionMultiplier := sampleCount sqrtFloor.
-	renderForm := resolveForm.
-	resolutionMultiplier > 1 ifTrue: [ 
-		renderForm := Form extent: anExtent * resolutionMultiplier depth: -32.
+	renderBufferPitch := anExtent x * sampleCount.
+	sampleDistribution := MultiSamplingDistributions at: sampleCount.
+	passingSamples := Array new: sampleCount.
+
+	renderBuffer := sampleCount = 1 ifTrue: [ 
+		resolveForm bits.
+	] ifFalse: [
+		WordArray new: renderBufferPitch * anExtent y.
 	].
 	self initialize.
 ]
 
 { #category : #'drawing commands' }
 BabylonSoftRenderingSurface >> resolveRendering [
-	renderForm == resolveForm ifTrue: [ ^ self ].
-	self flag: 'TODO: Move this into a FFI called library.'.
-	(WarpBlt toForm: resolveForm)
-		sourceForm: renderForm;
-		colorMap: renderForm colormapFromARGB;
-		cellSize: 2;
-		"installs a new colormap if cellSize > 1"
-			combinationRule: 3;
-		copyQuad: renderForm boundingBox innerCorners toRect: resolveForm boundingBox
+	| resolveBuffer sourceIndex sampleValue r g b a inverseSampleCount resolvedSample |
+	renderBuffer == resolveForm bits ifTrue: [ ^ self ].
+	
+	resolveForm unhibernate.
+	resolveBuffer := resolveForm bits.
+	sourceIndex := 1.
+	inverseSampleCount := 1.0 / sampleCount.
+	1 to: resolveBuffer size do: [ :destIndex |
+		r := 0.0.
+		g := 0.0.
+		b := 0.0.
+		a := 0.0.
+
+		1 to: sampleCount do: [ :sampleIndex |
+			sampleValue := renderBuffer at: sourceIndex.
+			
+			b := b + (sampleValue & 16rff) babylonDecodeSRGBColorChannel.
+			g := g + ((sampleValue >> 8) & 16rff) babylonDecodeSRGBColorChannel.
+			r := r + ((sampleValue >> 16) & 16rff) babylonDecodeSRGBColorChannel.
+			a := a + ((sampleValue >> 24) & 16rff) babylonDecodeLinearChannel.
+			sourceIndex := sourceIndex + 1.
+		].
+	
+		r := (r * inverseSampleCount) babylonEncodeLinearToSRGBColorChannel.
+		g := (g * inverseSampleCount) babylonEncodeLinearToSRGBColorChannel.
+		b := (b * inverseSampleCount) babylonEncodeLinearToSRGBColorChannel.
+		a := (a * inverseSampleCount) babylonEncodeColorChannel.
+	
+		resolvedSample := b | (g << 8) | (r << 16) | (a <<24).
+		resolveBuffer at: destIndex put: resolvedSample
+	].
+
 ]
 
 { #category : #initialization }
 BabylonSoftRenderingSurface >> setSurfaceState [
-	transform loadIdentity
+	transform loadIdentity.
+	self alphaOver
 ]
 
 { #category : #'primitive evaluation' }
@@ -141,7 +199,7 @@ BabylonSoftRenderingSurface >> shadeCCWTriangleV1: v1 v2: v2 v3: v3 with: shader
 	https://fgiesen.wordpress.com/2013/02/08/triangle-rasterization-in-practice/
 	https://fgiesen.wordpress.com/2013/02/10/optimizing-the-basic-rasterizer/
 "
-	| formExtent width height p1 p2 p3 minX minY maxX maxY area inverseArea destBits p destPitch pixelDeltaLength destRow fragmentValue destIndex w1 w2 w3 f1 f2 f3 pixelPoint |
+	| formExtent width height p1 p2 p3 minX minY maxX maxY area inverseArea destBits p destRow fragmentValue destIndex w1 w2 w3 f1 f2 f3 pixelPoint sampleDistributionSize sampleOffset passingSampleCount |
 	p1 := v1 position.
 	p2 := v2 position.
 	p3 := v3 position.
@@ -149,55 +207,73 @@ BabylonSoftRenderingSurface >> shadeCCWTriangleV1: v1 v2: v2 v3: v3 with: shader
 	formExtent := resolveForm extent.
 	width := formExtent x.
 	height := formExtent y.
-	minX := (p1 x min: p2 x) min: p3 x.
-	minY := (p1 y min: p2 y) min: p3 y.
-	maxX := (p1 x max: p2 x) max: p3 x.
-	maxY := (p1 y max: p2 y) max: p3 y.
+	minX := ((p1 x min: p2 x) min: p3 x) max: 0.
+	minY := ((p1 y min: p2 y) min: p3 y) max: 0.
+	maxX := ((p1 x max: p2 x) max: p3 x) min: (width - 1) << 12.
+	maxY := ((p1 y max: p2 y) max: p3 y) min: (height - 1) << 12.
 	
-	minX < 0 ifTrue: [ minX := minX & 1023 ].
-	minY < 0 ifTrue: [ minY := minY & 1023 ].
-	maxX := maxX min: (width - 1) << 12.
-	maxY := maxY min: (height - 1) << 12.
+	minX := minX & -4096.
+	minY := minY & -4096.
+	maxX := (maxX + 4095) & -4096.
+	maxY := (maxY + 4095) & -4096.
 
 	area := self barycentricAt: p1 forSegmentFrom: p2 to: p3.
 	(area closeTo: 0.0) ifTrue: [ ^ self ].
 	inverseArea := 1.0 / area.
 
-	renderForm unhibernate.
-	destBits := renderForm bits.
+	renderBuffer == resolveForm bits ifTrue: [ 
+		resolveForm unhibernate.
+	].
+	destBits := renderBuffer.
 
 	p := BabylonMutablePoint new.
 
-	destPitch := width*resolutionMultiplier.
-	pixelDeltaLength := 1024/resolutionMultiplier.
+	renderBufferPitch := width*sampleCount.
+	sampleDistributionSize := sampleDistribution size.
 	
-	destRow := ((minY >> 12) * destPitch) + (minX >> 12) + 1.	
+	destRow := ((minY >> 12) * renderBufferPitch) + ((minX >> 12)*sampleCount) + 1.
 	fragmentValue := BabylonLinearColor new.
-	minY to: maxY by: pixelDeltaLength do: [ :y |
+	minY to: maxY - 4096 by: 4096 do: [ :y |
 		destIndex := destRow.
-		minX to: maxX by: pixelDeltaLength do: [ :x |
-			p x: x.
-			p y: y.
-			
-			w1 := self barycentricAt: p forSegmentFrom: p2 to: p3.
-			w2 := self barycentricAt: p forSegmentFrom: p3 to: p1.
-			w3 := self barycentricAt: p forSegmentFrom: p1 to: p2.
+		minX to: maxX - 4096 by: 4096 do: [ :x |
+			passingSampleCount := 0.
+			1 to: sampleDistributionSize do: [ :sampleIndex |
+				sampleOffset := sampleDistribution at: sampleIndex.
+				p x: x + sampleOffset x.
+				p y: y + sampleOffset y.
 
-			(w1 >= 0.0 and: [w2 >= 0.0 and: [w3 >= 0.0]])
-			"(w1 | w2 | w3 > 0.0)" ifTrue: [
+				w1 := self barycentricAt: p forSegmentFrom: p2 to: p3.
+				w2 := self barycentricAt: p forSegmentFrom: p3 to: p1.
+				w3 := self barycentricAt: p forSegmentFrom: p1 to: p2.
+				
+				sampleIndex <= sampleCount ifTrue: [
+					(w1 | w2 | w3 > 0) ifTrue: [
+						passingSampleCount := passingSampleCount + 1.
+						passingSamples at: sampleIndex put: true
+					] ifFalse: [ 
+						passingSamples at: sampleIndex put: false
+					]
+				].
+			].
+		
+			passingSampleCount >= 1 ifTrue: [
 				f1 := w1 * inverseArea.
 				f2 := w2 * inverseArea.
 				f3 := w3 * inverseArea.
 				
 				pixelPoint := p fromFixedPointForBabylonRendering.
 				shader valueWithArguments: {pixelPoint . f1 . f2 . f3 . fragmentValue}.
-				destBits at: destIndex put: fragmentValue asBGRA32
 			].
-		
-			destIndex := destIndex + 1
+
+			1 to: sampleCount do: [ :sampleIndex |
+				(passingSamples at: sampleIndex) ifTrue: [
+					blendingModel renderBuffer: destBits at: destIndex blendWithLinearColor: fragmentValue
+				].
+				destIndex := destIndex + 1
+			].
 		].
 	
-		destRow := destRow + destPitch
+		destRow := destRow + renderBufferPitch
 	].
 ]
 

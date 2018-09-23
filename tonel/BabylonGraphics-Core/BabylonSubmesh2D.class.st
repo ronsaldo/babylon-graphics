@@ -50,12 +50,13 @@ BabylonSubmesh2D >> evaluatePrimitivesWith: aPrimitiveEvaluator vertices: vertic
 
 { #category : #converting }
 BabylonSubmesh2D >> evaluateTrianglesWith: aPrimitiveEvaluator [
-	| triangleCount i1 i2 i3 v1 v2 v3 |
+	| triangleCount i1 i2 i3 v1 v2 v3 sourceIndexIndex |
 	triangleCount := indices size // 3.
+	sourceIndexIndex := 1.
 	1 to: triangleCount do: [ :triangle |
-		i1 := indices at: triangle*3 - 2.
-		i2 := indices at: triangle*3 - 1.
-		i3 := indices at: triangle*3.
+		i1 := indices at: sourceIndexIndex. sourceIndexIndex := sourceIndexIndex + 1.
+		i2 := indices at: sourceIndexIndex. sourceIndexIndex := sourceIndexIndex + 1.
+		i3 := indices at: sourceIndexIndex. sourceIndexIndex := sourceIndexIndex + 1.
 		
 		v1 := aPrimitiveEvaluator evaluateVertexIndex: i1.
 		v2 := aPrimitiveEvaluator evaluateVertexIndex: i2.

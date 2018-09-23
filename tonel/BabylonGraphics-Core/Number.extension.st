@@ -12,7 +12,17 @@ Number >> asBabylonLinearColor [
 
 { #category : #'*BabylonGraphics-Core' }
 Number >> asFixedPointForBabylonRendering [
-	^ (self * 1024) floor
+	^ (self * 4096) floor
+]
+
+{ #category : #'*BabylonGraphics-Core' }
+Number >> babylonDecodeLinearChannel [
+	^ BabylonLinearColor decodeLinearChannel: self
+]
+
+{ #category : #'*BabylonGraphics-Core' }
+Number >> babylonDecodeSRGBColorChannel [
+	^ BabylonLinearColor decodeSRGBChannel: self
 ]
 
 { #category : #'*BabylonGraphics-Core' }
@@ -45,5 +55,5 @@ Number >> babylonSRGBToLinear [
 
 { #category : #'*BabylonGraphics-Core' }
 Number >> fromFixedPointForBabylonRendering [
-	^ self * "1.0 /1024" 0.0009765625
+	^ self * "1.0 /4096" 0.000244140625
 ]
