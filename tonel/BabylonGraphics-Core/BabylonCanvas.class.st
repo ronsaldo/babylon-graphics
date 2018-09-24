@@ -4,7 +4,7 @@ I provide a canvas rendering API.
 Class {
 	#name : #BabylonCanvas,
 	#superclass : #Object,
-	#category : #'BabylonGraphics-Core'
+	#category : #'BabylonGraphics-Core-Canvas'
 }
 
 { #category : #'drawing commands' }

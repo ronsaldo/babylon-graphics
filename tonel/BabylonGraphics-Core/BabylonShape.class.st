@@ -4,7 +4,7 @@ I represent a Pompeii shape.
 Class {
 	#name : #BabylonShape,
 	#superclass : #BabylonAbstractShape,
-	#category : #'BabylonGraphics-Core'
+	#category : #'BabylonGraphics-Core-Shape'
 }
 
 { #category : #converting }

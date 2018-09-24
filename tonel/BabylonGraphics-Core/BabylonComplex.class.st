@@ -9,7 +9,7 @@ Class {
 		'x',
 		'y'
 	],
-	#category : #'BabylonGraphics-Core'
+	#category : #'BabylonGraphics-Core-Geometry'
 }
 
 { #category : #accessing }

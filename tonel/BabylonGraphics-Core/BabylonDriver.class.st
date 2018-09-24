@@ -12,7 +12,7 @@ Class {
 		'CurrentDriver',
 		'CurrentDriverSession'
 	],
-	#category : #'BabylonGraphics-Core'
+	#category : #'BabylonGraphics-Core-Driver'
 }
 
 { #category : #accessing }

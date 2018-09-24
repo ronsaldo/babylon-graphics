@@ -4,7 +4,9 @@ Class for computing a convex hull
 Class {
 	#name : #BabylonConvexHull,
 	#superclass : #BabylonShape,
-	#category : #'BabylonGraphics-Core-Shape'
+	#traits : 'TBabylonGeometryAlgorithm',
+	#classTraits : 'TBabylonGeometryAlgorithm classTrait',
+	#category : #'BabylonGraphics-Core-Geometry'
 }
 
 { #category : #'instance creation' }
@@ -34,19 +36,6 @@ BabylonConvexHull >> compute: rawPoints [
 	].
 	
 	^ result
-]
-
-{ #category : #initialize }
-BabylonConvexHull >> cross: u with: v [
-	^ (u x * v y) - (u y * v x)
-]
-
-{ #category : #initialize }
-BabylonConvexHull >> crossWithReference: referencePoint first: first second: second [
-	| u v |
-	u := first - referencePoint.
-	v := second - referencePoint.
-	^ self cross: u with: v
 ]
 
 { #category : #initialize }

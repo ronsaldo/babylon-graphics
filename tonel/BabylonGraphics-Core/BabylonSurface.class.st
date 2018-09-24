@@ -4,7 +4,7 @@ I am a texture that can be used for rendering.
 Class {
 	#name : #BabylonSurface,
 	#superclass : #BabylonTexture,
-	#category : #'BabylonGraphics-Core'
+	#category : #'BabylonGraphics-Core-Texture'
 }
 
 { #category : #'material activation' }

@@ -4,7 +4,7 @@ I represent a transform that it is usually implemented as 3x3 matrix.
 Class {
 	#name : #BabylonTransform,
 	#superclass : #Object,
-	#category : #'BabylonGraphics-Core'
+	#category : #'BabylonGraphics-Core-Matrices'
 }
 
 { #category : #accessing }

@@ -4,7 +4,7 @@ I represent an abstract shape that can be renderer in a Pompeii canvas.
 Class {
 	#name : #BabylonAbstractShape,
 	#superclass : #Object,
-	#category : #'BabylonGraphics-Core'
+	#category : #'BabylonGraphics-Core-Shape'
 }
 
 { #category : #converting }

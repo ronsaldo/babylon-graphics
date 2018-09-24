@@ -56,7 +56,7 @@ BabylonMesh2DStrokeBuilder >> drawLineLoop: vertices [
 { #category : #drawing }
 BabylonMesh2DStrokeBuilder >> drawVertexLine: vertices [
 	| previousVertex vertex numVertices nextVertex normal deltaNormal |
-	width = 1 ifTrue: [ self drawLine: vertices ].
+	width = 1 ifTrue: [ ^ self drawLine: vertices ].
 	builder beginTriangles: currentMaterial.
 
 	previousVertex := vertices first.
@@ -84,8 +84,8 @@ BabylonMesh2DStrokeBuilder >> drawVertexLine: vertices [
 
 { #category : #drawing }
 BabylonMesh2DStrokeBuilder >> drawVertexLoop: vertices [
-	| previousVertex normal vertex nextVertex deltaNormal numVertices |
-	width = 1 ifTrue: [ self drawLineLoop: vertices ].
+	| previousVertex vertex nextVertex deltaNormal numVertices forwardNormal normal |
+	width = 1 ifTrue: [ ^ self drawLineLoop: vertices ].
 	builder beginTriangles: currentMaterial.
 
 	previousVertex := vertices last.
@@ -95,7 +95,8 @@ BabylonMesh2DStrokeBuilder >> drawVertexLoop: vertices [
 		nextVertex := vertices at: (index + 1) % vertices size + 1.
 		
 		normal := (nextVertex - previousVertex) normal.
-		deltaNormal := normal * (width*0.5).
+		deltaNormal := normal * (width*0.55).
+
 		builder
 			addVertex: (evaluator computeVertex: vertex - deltaNormal);
 			addVertex: (evaluator computeVertex: vertex + deltaNormal).
