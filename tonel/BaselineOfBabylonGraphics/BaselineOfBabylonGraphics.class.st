@@ -10,11 +10,9 @@ BaselineOfBabylonGraphics >> baseline: spec [
 
 	spec for: #'common' do: [
 		spec blessing: #'baseline'.
-		spec project: #'UFFIOpenGL' with: [
+		spec baseline: #'UFFIOpenGL' with: [
 				spec
-					className: #ConfigurationOfUFFIOpenGL;
-					versionString: #'stable';
-					repository: 'http://smalltalkhub.com/mc/ronsaldo/UFFIOpenGL/main/' ].
+					repository: 'github://ronsaldo/uffi-opengl/tonel' ].
 		spec 
 			package: #'BabylonGraphics-Athens' with: [
 				spec requires: #(#'BabylonGraphics-Core' ). ];
