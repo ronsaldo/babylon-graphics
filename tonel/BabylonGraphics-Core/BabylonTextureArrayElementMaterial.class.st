@@ -2,6 +2,7 @@ Class {
 	#name : #BabylonTextureArrayElementMaterial,
 	#superclass : #BabylonMaterial,
 	#instVars : [
+		'grayscaleTexture',
 		'textureArray',
 		'elementIndex'
 	],
@@ -21,6 +22,22 @@ BabylonTextureArrayElementMaterial >> elementIndex [
 { #category : #accessing }
 BabylonTextureArrayElementMaterial >> elementIndex: anObject [
 	elementIndex := anObject
+]
+
+{ #category : #accessing }
+BabylonTextureArrayElementMaterial >> grayscaleTexture [
+	^ grayscaleTexture
+]
+
+{ #category : #accessing }
+BabylonTextureArrayElementMaterial >> grayscaleTexture: anObject [
+	grayscaleTexture := anObject
+]
+
+{ #category : #initialization }
+BabylonTextureArrayElementMaterial >> initialize [
+	super initialize.
+	grayscaleTexture := false.
 ]
 
 { #category : #accessing }
