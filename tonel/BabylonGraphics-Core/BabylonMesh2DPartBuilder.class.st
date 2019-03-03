@@ -63,6 +63,19 @@ BabylonMesh2DPartBuilder >> gradientStart: startPosition color: startColor end: 
 		yourself
 ]
 
+{ #category : #accessing }
+BabylonMesh2DPartBuilder >> grayTexture: aTexture [
+	^ (self texture: aTexture) grayscaleTexture: true
+]
+
+{ #category : #texture }
+BabylonMesh2DPartBuilder >> grayTexture: aTexture rectangle: aRectangle [
+	self
+		grayTexture: aTexture;
+		textureTileRectangle: aRectangle;
+		rectangle: aRectangle
+]
+
 { #category : #texture }
 BabylonMesh2DPartBuilder >> grayTextureArray: aTextureArray element: aTextureElementIndex [
 	^ (self textureArray: aTextureArray element: aTextureElementIndex) grayscaleTexture: true
