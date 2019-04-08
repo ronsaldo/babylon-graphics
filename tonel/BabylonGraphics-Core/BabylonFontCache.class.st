@@ -218,6 +218,12 @@ BabylonFontCache >> width [
 ]
 
 { #category : #measuring }
+BabylonFontCache >> widthOfString: aString [
+	aString ifNil: [^0].
+	^ self widthOfString: aString from: 1 to: aString size
+]
+
+{ #category : #measuring }
 BabylonFontCache >> widthOfString: aString from: firstIndex to: lastIndex [
 	^ font widthOfString: aString from: firstIndex to: lastIndex
 ]
